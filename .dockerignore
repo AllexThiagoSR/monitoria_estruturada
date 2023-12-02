@@ -1,0 +1,10 @@
+.github/
+.vscode/
+node_modules/
+public/
+.env
+.env
+.gitignore
+trybe.yml
+Dockerfile
+docker-compose.yml

@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  node:
+    working_dir: /app
+    build: ./
+    container_name: trybe-academy-api
+    tty: true
+    stdin_open: true
+    command: dev
+    restart: always
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 3001:3001
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db
+      JWT_SECRET: secretJWT
+      API_HOST: 'node'
+      API_PORT: 3001
+      NODE_ENV: 'development'
+    networks:
+      - trybe-academy-net
+  db:
+    container_name: trybe-academy-db
+    image: mysql:8.0.23
+    platform: linux/x86_64
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+    cap_add:
+      - SYS_NICE
+    networks:
+      - trybe-academy-net
+networks:
+  trybe-academy-net:
+    driver: bridge
